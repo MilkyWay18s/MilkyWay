@@ -5026,7 +5026,7 @@ run(function()
 	FieldOfViewValue = FieldOfView.CreateSlider({
 		Name = "FOV",
 		Min = 30,
-		Max = 120,
+		Max = 130,
 		Function = function(val)
 			if FieldOfView.Enabled then
 				bedwars.FovController:setFOV(bedwars.ClientStoreHandler:getState().Settings.fov)
