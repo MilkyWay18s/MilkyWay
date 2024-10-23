@@ -4598,6 +4598,78 @@ run(function()
 end)
 
 run(function()
+    local BlueFire = {Enabled = false}
+    BlueFire = GuiLibrary.ObjectsThatCanBeSaved.RenderWindow.Api.CreateOptionsButton({
+        Name = "FireEffect",
+        Function = function(callback)
+            local player = game.Players.LocalPlayer
+
+            local function applyFireEffect(character)
+                local torso = character:WaitForChild("HumanoidRootPart")
+                
+                local fire = Instance.new("Fire")
+                fire.Color = Color3.new(0, 0, 1)
+                fire.SecondaryColor = Color3.new(0, 0, 1)
+                fire.Heat = 5
+                fire.Size = 7
+                fire.Parent = torso
+                
+                BlueFire.fire = fire
+            end
+
+            if callback then
+                local character = player.Character or player.CharacterAdded:Wait()
+                applyFireEffect(character)
+                BlueFire.Enabled = true
+
+                player.CharacterAdded:Connect(function(newCharacter)
+                    if BlueFire.Enabled then
+                        applyFireEffect(newCharacter)
+                    end
+                end)
+            else
+                if BlueFire.fire then
+                    BlueFire.fire:Destroy()
+                    BlueFire.fire = nil
+                end
+                BlueFire.Enabled = false
+            end
+        end
+    })
+end)
+
+run(function()
+    local Disabler = {Enabled = false}
+    Disabler = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
+        Name = "InfJump",
+        Function = function(callback)
+            local player = game.Players.LocalPlayer
+            local userInputService = game:GetService("UserInputService")
+
+            local function enableInfiniteJump()
+                userInputService.JumpRequest:Connect(function()
+                    if Disabler.Enabled then
+                        player.Character:FindFirstChildOfClass("Humanoid"):ChangeState("Jumping")
+                    end
+                end)
+            end
+
+            if callback then
+                Disabler.Enabled = true
+                enableInfiniteJump()
+                player.CharacterAdded:Connect(function()  -- Reconnect on respawn
+                    if Disabler.Enabled then
+                        enableInfiniteJump()
+                    end
+                end)
+            else
+                Disabler.Enabled = false
+            end
+        end
+    })
+end)																																																																																													
+
+run(function()
 	local BedESP = {Enabled = false}
 	local BedESPFolder = Instance.new("Folder")
 	BedESPFolder.Name = "BedESPFolder"
